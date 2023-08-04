@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-
+import axios from 'axios'; // Import the axios library
+import { AppWrapper, GlassContainer } from '../Components/Styled-Component'; // Adjust the import path based on the file structure
+import SignupForm from './SignupForm';
 
 const Form = styled.form`
   display: flex;
@@ -42,41 +43,124 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   background-color: #fff;
-  color: #4158d0;
+  color: #c850c0;
   font-weight: bold;
   cursor: pointer;
-  margin-top:20px
+  margin-top:20px;
+
+  /* Hover effect */
+  &:hover {
+    background-color: #c850c0;
+    color: #fff;
+    border-radius: 15px;
+
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align:center;
+`;
+const SuccessMessage = styled.div`
+  color: green;
+  text-align:center;
 `;
 
 
-
-
 function LoginForm() {
-  const handleSubmit = (event) => {
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [Error, setError] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setpasswordError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle login logic here
+    setEmailError('');
+    setpasswordError('');
+    setSuccessMessage('');
+    setError('');
+
+    if (!email) {
+      setEmailError('Please enter an email address.');
+      return;
+    }
+    if (!password || password < 5) {
+      setpasswordError('Please enter correct password.')
+    }
+    try {
+      const response = await axios.post('http://192.168.0.109:8000/api/auth/login', {
+
+        email: email,
+        password: password,
+      });
+
+      // Check the response for success or handle it as needed
+      if (response.data.success) {
+        // Handle successful signup
+
+        setemail('');
+        setpassword('');
+        setSuccessMessage('Login successful. You can now log in.');
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 2000);
+        console.log('Signup successful');
+      } else {
+        // Handle unsuccessful signup with errors
+
+        console.log('Signup failed:', response.data.errors);
+      }
+    } catch (error) {
+      // Handle any network or server errors
+      setError('Enter right credentials.')
+      console.error('Error:', error.message);
+    }
   };
- 
+
   return (
     <>
-{/* <FontAwesomeIcon icon="user" size="2x" style={{color:'white'}} /> Increase the size of the icon */}
-      <h2 className='Login-text'>Login <FontAwesomeIcon icon="user" size="1x" style={{color:'white'}} /> </h2>
+    <AppWrapper>
+      <GlassContainer>
+        
+      <h2 className='Login-text'>Login <FontAwesomeIcon icon="user" size="1x" style={{ color: 'white' }} /> </h2>
+      {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+      {Error && <ErrorMessage>{Error}</ErrorMessage>}
+
+      {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
+      {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
+
+      <Form className='Form' onSubmit={handleSubmit}>
+
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setemail(e.target.value)}
+        />
 
 
-    <Form className='Form' onSubmit={handleSubmit}>
-    
-      <Input type="email" placeholder="Email" />
-      <Input type="password" placeholder="Password" />
-      <Button type="submit">Login</Button>
-      <div>
-      <p style={{color:'white',marginBlock:'20px'}}>
-        Do you already have an account? <a  style={{
-          textDecoration:'none',color:"#000066",fontWeight:'400',}} href="/signup">Sign up</a>
-      </p>
-    </div>
-    
-    </Form>
-  
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setpassword(e.target.value)}
+        />
+        <Button type="submit">Login</Button>
+        <div>
+          <p style={{ color: 'white', marginBlock: '20px' }}>
+            Do you already have an account? <a style={{
+              textDecoration: 'none', color: "#000066", fontWeight: '400',cursor:"pointer"
+            }} href={SignupForm}>Sign up</a>
+          </p>
+        </div>
+
+      </Form>
+      </GlassContainer>
+     </AppWrapper>
+   
+
     </>
   );
 }
