@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios'; // Import the axios library
-import { AppWrapper, GlassContainer } from '../Components/Styled-Component'; // Adjust the import path based on the file structure
+import axios from 'axios'; 
+import { AppWrapper, GlassContainer } from '../Components/Styled-Component'; 
 import SignupForm from './SignupForm';
 
 const Form = styled.form`
@@ -96,9 +96,9 @@ function LoginForm() {
         password: password,
       });
 
-      // Check the response for success or handle it as needed
+     
       if (response.data.success) {
-        // Handle successful signup
+       
 
         setemail('');
         setpassword('');
@@ -108,12 +108,12 @@ function LoginForm() {
         }, 2000);
         console.log('Signup successful');
       } else {
-        // Handle unsuccessful signup with errors
+       
 
         console.log('Signup failed:', response.data.errors);
       }
     } catch (error) {
-      // Handle any network or server errors
+     
       setError('Enter right credentials.')
       console.error('Error:', error.message);
     }
