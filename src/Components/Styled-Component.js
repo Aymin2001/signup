@@ -36,7 +36,7 @@ const GlassContainer = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 2px solid #ccc; /* Transparent border to create space for the lightning effect */
+    border: 2px solid #ccc; 
     border-radius: 10px;
     box-shadow: 0 0 5px 5px rgba(255, 255, 255, 0.8);
     animation: ${lightningStrike} 3s infinite;
